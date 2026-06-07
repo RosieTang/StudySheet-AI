@@ -1,22 +1,230 @@
 # StudySheet AI
-### An AI-Powered Retrieval-Augmented Learning Assistant for Academic Documents
 
-## Overview
+## Project Vision
 
-StudySheet AI is a Retrieval-Augmented Generation (RAG) platform designed to help students efficiently study large collections of academic materials.
+**StudySheet AI** is an AI-powered exam preparation platform that transforms course materials into searchable knowledge bases, citation-grounded answers, cheat sheets, and study resources using Retrieval-Augmented Generation (RAG).
 
-Instead of functioning as a generic "chat with PDF" application, StudySheet AI focuses on a real educational workflow:
+Unlike general-purpose document assistants, StudySheet AI focuses specifically on the student workflow of preparing for exams and reviewing large collections of academic content.
 
-1. Upload lecture slides, notes, assignments, and readings.
-2. Index and retrieve relevant information using semantic search.
-3. Generate grounded answers with citations.
-4. Automatically create exam-ready cheat sheets, summaries, flashcards, and study guides.
-
-The goal is to transform scattered course materials into a searchable knowledge base that helps students prepare for exams while remaining grounded in the original source documents.
+The project serves as both an educational productivity tool and an exploration of modern AI system design, information retrieval, and full-stack software engineering.
 
 ---
 
-# Key Features
+# Tech Stack
+
+## Frontend
+
+### Next.js
+
+Responsibilities:
+- Routing
+- Dashboard UI
+- Chat Interface
+- Authentication Pages
+
+### TypeScript
+
+Responsibilities:
+- Type Safety
+- API Contracts
+
+### Tailwind CSS
+
+Responsibilities:
+- Styling
+- Responsive Design
+
+### shadcn/ui
+
+Responsibilities:
+- Reusable Components
+- Tables
+- Dialogs
+- Forms
+
+---
+
+## Backend
+
+### Java 21
+
+Primary Language
+
+Responsibilities:
+- Business Logic
+- Retrieval Pipeline
+- API Development
+
+Why:
+- Industry-standard backend language
+- Strong internship relevance
+- Opportunity to learn enterprise Java development
+
+### Spring Boot
+
+Responsibilities:
+- REST APIs
+- Dependency Injection
+- Service Architecture
+- Configuration Management
+
+Modules:
+- Spring Web
+- Spring Data JPA
+- Spring Security
+- Spring Validation
+
+### Spring AI
+
+Responsibilities:
+- LLM Integration
+- Embeddings
+- Prompt Templates
+- RAG Components
+
+---
+
+## Database Layer
+
+### PostgreSQL
+
+Stores:
+- Users
+- Documents
+- Metadata
+- Conversations
+- Retrieval Logs
+
+### pgvector
+
+Stores:
+- Document Embeddings
+- Semantic Search Index
+
+---
+
+## AI Layer
+
+### OpenAI API
+
+Uses:
+- Embedding Generation
+- Answer Generation
+- Cheat Sheet Creation
+- Flashcard Generation
+
+---
+
+## Infrastructure
+
+### Docker
+
+Purpose:
+- Containerization
+
+### Vercel
+
+Purpose:
+- Frontend Deployment
+
+### Railway / Render
+
+Purpose:
+- Backend Deployment
+
+### GitHub Actions
+
+Purpose:
+- CI/CD Pipeline
+
+---
+
+# System Architecture
+
+```text
+┌─────────────────────────────┐
+│        Next.js Frontend     │
+└──────────────┬──────────────┘
+               │
+               ▼
+
+┌─────────────────────────────┐
+│      Spring Boot API        │
+└──────────────┬──────────────┘
+               │
+
+    ┌──────────┼──────────┐
+    ▼          ▼          ▼
+
+Document   Retrieval   User/Auth
+Service    Service     Service
+
+    │
+    ▼
+
+┌─────────────────────────────┐
+│         PostgreSQL          │
+│         + pgvector          │
+└──────────────┬──────────────┘
+               │
+               ▼
+
+      Semantic Search
+
+               │
+               ▼
+
+         Spring AI
+
+               │
+               ▼
+
+          OpenAI API
+```
+
+---
+
+# Project Structure
+
+```text
+studysheet-ai/
+
+├── frontend/
+│
+│   ├── app/
+│   ├── components/
+│   ├── hooks/
+│   ├── services/
+│   └── types/
+│
+├── backend/
+│
+│   └── src/main/java/com/studysheet/
+│
+│       ├── controller/
+│       ├── service/
+│       ├── repository/
+│       ├── entity/
+│       ├── dto/
+│       ├── retrieval/
+│       ├── embedding/
+│       ├── parser/
+│       ├── security/
+│       ├── config/
+│       └── exception/
+│
+├── database/
+│
+├── evaluation/
+│
+├── docker/
+│
+└── docs/
+```
+
+---
+
+# Core Features
 
 ## Document Knowledge Base
 
@@ -38,8 +246,6 @@ Example:
 
 The system retrieves relevant lecture content before generating a response.
 
----
-
 ## Cheat Sheet Generation
 
 Generate condensed study materials under specific constraints:
@@ -53,8 +259,6 @@ Example:
 
 > "Generate a one-page midterm cheat sheet covering lectures 1-8."
 
----
-
 ## Flashcard Generation
 
 Automatically create:
@@ -65,8 +269,6 @@ Automatically create:
 
 Exportable to formats compatible with common spaced repetition tools.
 
----
-
 ## Course Analytics
 
 Analyze uploaded materials to identify:
@@ -75,8 +277,6 @@ Analyze uploaded materials to identify:
 - Important formulas
 - Topic relationships
 - Coverage statistics
-
----
 
 ## Citation-Aware Responses
 
@@ -90,245 +290,68 @@ This increases trustworthiness and makes verification easy.
 
 ---
 
-# System Architecture
+# Additional Engineering Features
 
-```text
-                ┌─────────────────┐
-                │     Frontend    │
-                │    Next.js UI   │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │    FastAPI      │
-                │  Backend API    │
-                └────────┬────────┘
-                         │
-        ┌────────────────┼────────────────┐
-        ▼                ▼                ▼
+## User Authentication
 
- ┌─────────────┐  ┌─────────────┐  ┌─────────────┐
- │ PDF Parsing │  │ Embeddings  │  │ Auth/User   │
- │ Processing  │  │ Generation  │  │ Management  │
- └──────┬──────┘  └──────┬──────┘  └─────────────┘
-        │                │
-        ▼                ▼
+Using Spring Security.
 
- ┌──────────────────────────────────┐
- │        PostgreSQL + pgvector     │
- │   Document Storage + Vectors     │
- └──────────────────────────────────┘
-                     │
-                     ▼
+Features:
+- Registration
+- Login
+- JWT Authentication
+- Protected Endpoints
 
-          ┌────────────────────┐
-          │ Retrieval Pipeline │
-          └──────────┬─────────┘
-                     ▼
-
-             ┌──────────────┐
-             │ OpenAI / LLM │
-             └──────────────┘
-```
+Benefits:
+- Multi-user support
+- Production-style architecture
+- Better system design experience
 
 ---
 
-# Technology Stack
+## Retrieval Analytics Dashboard
 
-## Frontend
+Track:
 
-### Next.js
+- Number of uploaded documents
+- Query count
+- Retrieval latency
+- Most searched topics
 
-Purpose:
-
-- Application framework
-- Routing
-- Server-side rendering
-
-Why:
-
-- Industry-standard modern frontend framework
-- Strong internship relevance
+Benefits:
+- Demonstrates observability
+- Shows understanding of production systems
 
 ---
 
-### TypeScript
+## Query History
 
-Purpose:
+Store:
 
-- Type safety
-- Better maintainability
+- User Question
+- Retrieved Chunks
+- Generated Response
+- Retrieval Latency
+- Token Usage
 
-Why:
-
-- Widely used in production environments
-
----
-
-### Tailwind CSS
-
-Purpose:
-
-- Styling
-- Responsive design
-
-Why:
-
-- Fast development
-- Modern UI ecosystem
+Benefits:
+- Enables evaluation
+- Supports future optimization
 
 ---
 
-### shadcn/ui
+## Admin Metrics
 
-Purpose:
+Track:
 
-- Reusable UI components
+- Average Retrieval Time
+- Average Generation Time
+- Total Documents
+- Storage Usage
 
-Examples:
-
-- Chat interface
-- File upload
-- Tables
-- Dialogs
-
----
-
-# Backend
-
-## FastAPI
-
-Purpose:
-
-- REST API
-- Document processing
-- Retrieval orchestration
-
-Why:
-
-- Excellent Python ecosystem integration
-- High performance
-- Easy deployment
-
----
-
-# Database
-
-## PostgreSQL
-
-Purpose:
-
-- User management
-- Metadata storage
-- Conversation history
-
----
-
-## pgvector
-
-Purpose:
-
-- Embedding storage
-- Similarity search
-
-Why:
-
-- Production-friendly
-- Simpler deployment than separate vector databases
-
----
-
-# AI Stack
-
-## OpenAI Embeddings
-
-Purpose:
-
-- Semantic document indexing
-
-Example:
-
-- text-embedding-3-large
-
----
-
-## OpenAI GPT Models
-
-Purpose:
-
-- Answer generation
-- Summarization
-- Cheat sheet creation
-
----
-
-# Infrastructure
-
-## Docker
-
-Purpose:
-
-- Consistent deployment
-- Reproducible environments
-
----
-
-## Vercel
-
-Purpose:
-
-- Frontend deployment
-
----
-
-## Railway / Render
-
-Purpose:
-
-- Backend deployment
-
----
-
-# Project Structure
-
-```text
-studysheet-ai/
-
-├── frontend/
-│
-│   ├── app/
-│   ├── components/
-│   ├── lib/
-│   ├── hooks/
-│   └── types/
-│
-├── backend/
-│
-│   ├── api/
-│   ├── services/
-│   ├── retrieval/
-│   ├── embeddings/
-│   ├── parsers/
-│   ├── models/
-│   └── utils/
-│
-├── database/
-│
-│   ├── migrations/
-│   └── schema/
-│
-├── evaluation/
-│
-│   ├── retrieval_tests/
-│   ├── benchmarks/
-│   └── metrics/
-│
-├── docs/
-│
-├── docker/
-│
-└── README.md
-```
+Benefits:
+- Adds production engineering depth
+- Creates strong discussion points during interviews
 
 ---
 
@@ -372,225 +395,216 @@ Answer + Citations
 
 # 10-Week Development Timeline
 
-## Week 1 — Planning & Setup
+## Week 1 — Java & Spring Boot Fundamentals
 
-### Goals
+Goals:
+- Learn Spring Boot basics
+- Set up project architecture
+- Create REST API skeleton
 
-- Finalize project scope
-- Create repository structure
-- Set up development environment
-
-### Deliverables
-
+Deliverables:
+- Spring Boot application
 - GitHub repository
-- Next.js frontend
-- FastAPI backend
-- PostgreSQL instance
 - Docker setup
 
 ---
 
-## Week 2 — Document Processing Pipeline
+## Week 2 — Database Layer
 
-### Goals
+Goals:
+- Set up PostgreSQL
+- Learn Spring Data JPA
+- Design schema
 
-Implement document ingestion.
+Tasks:
+- User entity
+- Document entity
+- Conversation entity
+- Repository layer
 
-### Tasks
+Deliverables:
+- Working database integration
 
+---
+
+## Week 3 — Document Ingestion Pipeline
+
+Goals:
+- Upload and process PDFs
+
+Tasks:
 - PDF upload
 - Text extraction
 - Metadata extraction
-- File storage
+- Storage pipeline
 
-### Deliverables
-
-- Working upload flow
+Deliverables:
 - Parsed document output
 
 ---
 
-## Week 3 — Embeddings & Vector Search
+## Week 4 — Embeddings & Vector Search
 
-### Goals
+Goals:
+- Build semantic retrieval system
 
-Create knowledge base.
-
-### Tasks
-
+Tasks:
 - Chunking strategy
-- Embedding generation
+- OpenAI embeddings
 - pgvector integration
 - Similarity search
 
-### Deliverables
-
+Deliverables:
 - Searchable document index
 
 ---
 
-## Week 4 — Basic RAG Chat
+## Week 5 — Basic RAG Chat
 
-### Goals
+Goals:
+- Build MVP
 
-Build MVP.
-
-### Tasks
-
-- User query endpoint
+Tasks:
 - Retrieval pipeline
 - Prompt construction
-- LLM integration
+- OpenAI integration
+- Chat endpoint
 
-### Deliverables
-
+Deliverables:
 - Ask questions about uploaded documents
 
 ---
 
-## Week 5 — Frontend Chat Interface
+## Week 6 — Frontend Development
 
-### Goals
+Goals:
+- Build user interface
 
-Create usable product.
+Tasks:
+- Dashboard
+- File upload
+- Chat interface
+- API integration
 
-### Tasks
-
-- Chat UI
-- Conversation history
-- Loading states
-- Streaming responses
-
-### Deliverables
-
-- End-to-end working application
+Deliverables:
+- Full-stack working application
 
 ---
 
-## Week 6 — Citation System
+## Week 7 — Authentication & Citations
 
-### Goals
+Goals:
+- Improve security and answer quality
 
-Improve answer quality.
-
-### Tasks
-
-- Source tracking
+Tasks:
+- JWT Authentication
+- Spring Security
 - Citation generation
-- Page references
-- Chunk metadata
+- Source tracking
 
-### Deliverables
-
-- Grounded responses with citations
+Deliverables:
+- User accounts
+- Citation-aware responses
 
 ---
 
-## Week 7 — Cheat Sheet Generator
+## Week 8 — Cheat Sheet Generator
 
-### Goals
+Goals:
+- Build differentiation feature
 
-Build unique feature.
-
-### Tasks
-
-- Summary generation
-- Compression prompts
+Tasks:
+- Exam cheat sheet generation
 - Formula extraction
-- Exam-mode outputs
+- Summary generation
+- Study guide generation
 
-### Deliverables
-
-- One-page cheat sheet generation
-
----
-
-## Week 8 — Flashcards & Study Tools
-
-### Goals
-
-Expand learning functionality.
-
-### Tasks
-
-- Flashcard generation
-- Concept extraction
-- Key-term identification
-
-### Deliverables
-
-- Auto-generated study aids
+Deliverables:
+- One-page exam cheat sheet feature
 
 ---
 
 ## Week 9 — Evaluation & Optimization
 
-### Goals
+Goals:
+- Add engineering depth
 
-Add engineering depth.
-
-### Tasks
-
+Tasks:
 - Retrieval benchmarking
-- Chunk-size experiments
 - Latency measurements
 - Cost analysis
-- Error tracking
+- Chunk-size experiments
 
-### Deliverables
-
+Deliverables:
 - Evaluation report
 - Performance improvements
 
 ---
 
-## Week 10 — Deployment & Resume Polish
+## Week 10 — Deployment & Documentation
 
-### Goals
+Goals:
+- Production deployment
 
-Productionize project.
-
-### Tasks
-
-- Deploy frontend
-- Deploy backend
+Tasks:
+- Frontend deployment
+- Backend deployment
 - Documentation
 - Demo video
-- Resume bullets
+- Resume preparation
 
-### Deliverables
-
-- Public demo
+Deliverables:
+- Public application
 - GitHub repository
 - Technical documentation
 - Resume-ready project
 
 ---
 
-# Expected Learning Outcomes
+# Success Criteria
 
-By the end of the project, the developer will gain experience with:
+## Must Have
 
-- Retrieval-Augmented Generation (RAG)
-- Embeddings and Vector Databases
-- LLM Application Development
-- Full-Stack Engineering
-- Prompt Engineering
-- Information Retrieval Systems
-- Evaluation and Benchmarking
-- Cloud Deployment
-- Production Software Architecture
+- Java 21
+- Spring Boot
+- PostgreSQL
+- pgvector
+- OpenAI Integration
+- RAG Pipeline
+- Authentication
+- Citation Support
+- Deployment
+
+## Nice To Have
+
+- Flashcards
+- Analytics Dashboard
+- Hybrid Retrieval
+- Reranking
+- Evaluation Benchmarks
+- Cost Monitoring
+- Admin Dashboard
 
 ---
 
 # Resume Positioning
 
-StudySheet AI demonstrates a combination of:
+StudySheet AI demonstrates:
 
-- Full-stack software engineering
-- Applied machine learning
-- Information retrieval
-- Product design
-- Systems architecture
+- Full-Stack Software Engineering
+- Java Backend Development
+- Spring Boot Architecture
+- AI Engineering
+- Retrieval-Augmented Generation (RAG)
+- Information Retrieval Systems
+- Database Design
+- Production Deployment
+- Evaluation and Benchmarking
 
-The project serves as a practical example of building an AI-powered application that solves a real-world educational problem while incorporating modern LLM engineering practices.
+Example Resume Bullet:
+
+> Built a full-stack AI-powered exam preparation platform using Java, Spring Boot, PostgreSQL, pgvector, and OpenAI APIs, enabling citation-grounded question answering and automated study guide generation from academic documents.
+
+> Implemented a Retrieval-Augmented Generation (RAG) pipeline with semantic search, vector embeddings, and document chunking to improve answer relevance and reduce hallucinations.
+
+> Designed and deployed a production-style architecture featuring JWT authentication, analytics dashboards, retrieval evaluation, and cloud deployment.
