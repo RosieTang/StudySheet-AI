@@ -25,7 +25,7 @@ The backend is built with **Spring Boot**, integrated with **LangChain4j** for A
 | **Compact PDF Generation** | Generates **double-column, small-font, table-layout** PDFs to maximize page utilization |
 | **Multi-turn Dialogue** | Users can iteratively refine content, adjust focus, and trim redundancy with the Agent |
 | **Project Persistence** | Documents and chat histories are organized by Project/Session for long-term access |
-| **Project Persistence** | Documents and chat histories are organized by Project/Session for long-term access |
+| **Citation-Aware Responses** | Every answer includes references to source documents and page locations whenever possible |
 
 ---
 
