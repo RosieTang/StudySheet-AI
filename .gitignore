@@ -1,0 +1,29 @@
+# macOS
+.DS_Store
+
+# Java / Maven
+target/
+*.class
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+
+# Node / frontend
+node_modules/
+dist/
+build/
+
+# Local uploads and generated files
+uploads/
+generated/
