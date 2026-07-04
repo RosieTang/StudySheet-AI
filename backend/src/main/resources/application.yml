@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: studysheet-ai-backend
+  profiles:
+    default: dev
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 20MB
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+app:
+  pdf:
+    max-file-size: 20MB
+  chunking:
+    max-characters: 500
+    overlap-characters: 50

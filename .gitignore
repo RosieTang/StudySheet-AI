@@ -27,3 +27,5 @@ build/
 # Local uploads and generated files
 uploads/
 generated/
+data/
+backend/data/

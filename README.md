@@ -272,164 +272,102 @@ Frontend    Controller    Service    Parser    Retrieval    Agent    Renderer   
 
 # Project Structure
 
-```text
-studysheet-ai/
+This section tracks the real repository structure. Future modules should be added here only when they are implemented.
 
-cheatsheet-generator/
-├── README.md                                          # Project documentation
-├── LICENSE                                            # License file
-├── .gitignore                                         # Git ignore rules
-│
-├── backend/                                           # 【Backend】Spring Boot application
-│   ├── src/
-│   │   ├── main/
-│   │   │   ├── java/
-│   │   │   │   └── com/yourname/cheatsheet/
-│   │   │   │       ├── CheatsheetApplication.java    # Spring Boot entry point
-│   │   │   │       │
-│   │   │   │       ├── controller/                   # 【Access Layer】REST APIs
-│   │   │   │       │   ├── DocumentController.java   # Upload/delete documents
-│   │   │   │       │   ├── SessionController.java    # Create/switch/delete sessions
-│   │   │   │       │   └── GenerateController.java   # Trigger generation, download PDF
-│   │   │   │       │
-│   │   │   │       ├── service/                      # 【Business Layer】Core orchestration
-│   │   │   │       │   ├── DocumentProcessingService.java  # Parse, chunk, vectorize
-│   │   │   │       │   ├── RetrievalService.java           # Multi-path retrieval (vector + BM25)
-│   │   │   │       │   ├── AgentOrchestrationService.java  # Agent orchestration, tool calling
-│   │   │   │       │   ├── PdfRenderingService.java        # HTML to PDF conversion
-│   │   │   │       │   └── QuotaManagementService.java     # User quota management
-│   │   │   │       │
-│   │   │   │       ├── agent/                        # 【Agent Module】LangChain4j core
-│   │   │   │       │   ├── AgentConfig.java          # LLM client & ChatMemory config
-│   │   │   │       │   ├── CheatsheetAgent.java      # Agent definition (System Prompt)
-│   │   │   │       │   └── tools/                    # Agent-callable tools
-│   │   │   │       │       ├── SummarizeTool.java    # Text summarization/abbreviation
-│   │   │   │       │       ├── ExtractTableTool.java # Extract table structures from text
-│   │   │   │       │       └── FormatHtmlTool.java   # Format content to compact HTML
-│   │   │   │       │
-│   │   │   │       ├── retrieval/                    # 【Retrieval Module】
-│   │   │   │       │   ├── EmbeddingService.java     # Embedding model invocation
-│   │   │   │       │   ├── VectorStoreService.java   # Vector DB CRUD (PGvector)
-│   │   │   │       │   ├── KeywordSearchService.java # BM25 keyword search (Lucene)
-│   │   │   │       │   └── HybridSearchService.java  # Merge vector + keyword results
-│   │   │   │       │
-│   │   │   │       ├── parser/                       # 【Parser Module】Document factory
-│   │   │   │       │   ├── DocumentParser.java       # Strategy pattern interface
-│   │   │   │       │   ├── PdfParser.java            # PDF parsing (PDFBox)
-│   │   │   │       │   ├── PptParser.java            # PPT parsing (POI)
-│   │   │   │       │   ├── WordParser.java           # Word parsing (POI)
-│   │   │   │       │   └── ParserFactory.java        # Factory for format-specific parsers
-│   │   │   │       │
-│   │   │   │       ├── renderer/                     # 【Renderer Module】
-│   │   │   │       │   ├── HtmlToPdfRenderer.java    # Flying Saucer wrapper
-│   │   │   │       │   └── HtmlTemplateBuilder.java  # CSS builder (double-column, small font)
-│   │   │   │       │
-│   │   │   │       ├── config/                       # 【Configuration】
-│   │   │   │       │   ├── LlmConfig.java            # LLM client beans (Ollama/OpenAI)
-│   │   │   │       │   ├── VectorStoreConfig.java    # PGvector datasource config
-│   │   │   │       │   └── SecurityConfig.java       # Spring Security (JWT)
-│   │   │   │       │
-│   │   │   │       ├── entity/                       # 【Entities】JPA mappings
-│   │   │   │       │   ├── User.java                 # User table
-│   │   │   │       │   ├── Document.java             # Uploaded file metadata
-│   │   │   │       │   ├── Session.java              # Project session (links multiple docs)
-│   │   │   │       │   └── ChatHistory.java          # Multi-turn conversation records
-│   │   │   │       │
-│   │   │   │       ├── repository/                   # 【Data Access】Spring Data JPA
-│   │   │   │       │   ├── UserRepository.java
-│   │   │   │       │   ├── DocumentRepository.java
-│   │   │   │       │   └── SessionRepository.java
-│   │   │   │       │
-│   │   │   │       ├── dto/                          # 【DTOs】API request/response
-│   │   │   │       │   ├── UploadRequest.java
-│   │   │   │       │   ├── GenerateRequest.java
-│   │   │   │       │   └── GenerateResponse.java
-│   │   │   │       │
-│   │   │   │       └── exception/                    # 【Exception Handling】
-│   │   │   │           ├── GlobalExceptionHandler.java
-│   │   │   │           ├── ResourceNotFoundException.java
-│   │   │   │           └── QuotaExceededException.java
-│   │   │   │
-│   │   │   └── resources/
-│   │   │       ├── application.yml                   # Main config (API keys, DB, etc.)
-│   │   │       ├── application-dev.yml               # Dev-specific config
-│   │   │       ├── application-prod.yml              # Prod-specific config
-│   │   │       ├── logback-spring.xml                # Logging configuration
-│   │   │       └── static/                           # (Optional) Static resources
-│   │   │
-│   │   └── test/                                      # Unit / Integration tests
-│   │       ├── java/
-│   │       │   └── com/yourname/cheatsheet/
-│   │       │       ├── controller/                   # Controller tests
-│   │       │       ├── service/                      # Service tests
-│   │       │       └── integration/                  # End-to-end integration tests
-│   │       └── resources/
-│   │           └── test-data/                        # Sample PDFs/PPTs for testing
-│   │
-│   ├── docker-compose.yml                            # Local dev env (PostgreSQL+PGvector+Ollama)
-│   ├── Dockerfile                                    # Containerization for deployment
-│   ├── pom.xml                                       # Maven dependencies
-│   └── mvnw / mvnw.cmd                               # Maven wrapper scripts
-│
-├── frontend/                                         # 【Frontend】Web application
-│   ├── public/
-│   │   ├── index.html                                # Main HTML entry
-│   │   └── favicon.ico
-│   ├── src/
-│   │   ├── App.jsx / App.tsx                         # Main React/Vue component
-│   │   ├── components/
-│   │   │   ├── Upload.jsx                            # Document upload component
-│   │   │   ├── Chat.jsx                              # Multi-turn dialogue component
-│   │   │   ├── SessionManager.jsx                    # Project session management
-│   │   │   └── PdfDownload.jsx                       # PDF download button
-│   │   ├── services/
-│   │   │   └── api.js                                # Backend API client (Axios)
-│   │   ├── hooks/                                    # Custom React hooks
-│   │   ├── styles/                                   # CSS / Tailwind styles
-│   │   └── utils/                                    # Utility functions
-│   ├── package.json                                  # NPM dependencies
-│   ├── vite.config.js / webpack.config.js            # Build tool config
-│   ├── Dockerfile                                    # Frontend containerization
-│   └── nginx.conf                                    # Nginx config (for static serving)
-│
-├── docs/                                             # 【Documentation】
-│   ├── api/                                          # API documentation (OpenAPI/Swagger)
-│   │   └── openapi.yaml
-│   ├── architecture/                                 # Architecture diagrams
-│   │   └── system-architecture.drawio
-│   ├── deployment/                                   # Deployment guides
-│   │   ├── aws-setup.md                              # AWS setup instructions
-│   │   └── local-development.md                      # Local dev setup guide
-│   └── user-guide.md                                 # End-user guide
-│
-├── scripts/                                          # 【Scripts】Utility scripts
-│   ├── deploy.sh                                     # Deployment script
-│   ├── backup-db.sh                                  # Database backup script
-│   └── seed-data.sh                                  # Seed test data
-│
-├── terraform/                                        # 【Infrastructure as Code】AWS provisioning
-│   ├── main.tf                                       # Terraform main configuration
-│   ├── variables.tf                                  # Input variables
-│   ├── outputs.tf                                    # Output values
-│   └── modules/                                      # Reusable modules
-│       ├── lambda/
-│       ├── rds/
-│       └── s3/
-│
-├── kubernetes/                                       # 【Kubernetes】Deployment manifests
-│   ├── deployment.yaml                               # Backend deployment
-│   ├── service.yaml                                  # Backend service
-│   ├── ingress.yaml                                  # Ingress configuration
-│   └── configmap.yaml                                # Environment variables
-│
-├── .github/                                          # 【CI/CD】GitHub Actions
-│   └── workflows/
-│       ├── ci.yml                                    # Continuous Integration
-│       └── cd.yml                                    # Continuous Deployment
-│
-├── .env.example                                      # Environment variables template
-└── .gitignore                                        # Git ignore rules
+## Current Structure
+
+```text
+StudySheet-AI/
+├── README.md
+├── .gitignore
+├── backend/
+│   ├── pom.xml
+│   └── src/
+│       ├── main/
+│       │   ├── java/
+│       │   │   └── com/studysheetai/
+│       │   │       ├── StudySheetAiApplication.java
+│       │   │       ├── chunking/       # Text chunking logic for RAG ingestion
+│       │   │       │   ├── ChunkingProperties.java
+│       │   │       │   ├── TextChunk.java
+│       │   │       │   └── TextChunkerService.java
+│       │   │       ├── config/         # Spring/application configuration
+│       │   │       ├── controller/     # REST API entrypoints
+│       │   │       │   ├── DocumentController.java
+│       │   │       │   └── SearchController.java
+│       │   │       ├── dto/            # API request/response objects
+│       │   │       │   ├── ChunkPreview.java
+│       │   │       │   ├── DocumentChunkResponse.java
+│       │   │       │   ├── DocumentProcessingResult.java
+│       │   │       │   ├── ErrorResponse.java
+│       │   │       │   ├── SearchRequest.java
+│       │   │       │   ├── SearchResponse.java
+│       │   │       │   └── SearchResult.java
+│       │   │       ├── entity/         # JPA entities
+│       │   │       │   ├── Document.java
+│       │   │       │   └── DocumentChunk.java
+│       │   │       ├── exception/      # Application error handling
+│       │   │       │   ├── DocumentProcessingException.java
+│       │   │       │   ├── GlobalExceptionHandler.java
+│       │   │       │   ├── InvalidDocumentException.java
+│       │   │       │   └── ResourceNotFoundException.java
+│       │   │       ├── parser/         # PDF/document parsing logic
+│       │   │       │   ├── ParsedPdfPage.java
+│       │   │       │   └── PdfParserService.java
+│       │   │       ├── repository/     # Spring Data repositories
+│       │   │       │   ├── DocumentChunkRepository.java
+│       │   │       │   └── DocumentRepository.java
+│       │   │       ├── retrieval/      # Keyword retrieval for study scopes
+│       │   │       │   ├── KeywordRetrievalService.java
+│       │   │       │   ├── RetrievalMode.java
+│       │   │       │   └── RetrievedChunk.java
+│       │   │       └── service/        # Business orchestration services
+│       │   │           ├── DocumentProcessingRequest.java
+│       │   │           ├── DocumentProcessingService.java
+│       │   │           └── LocalPdfIngestionRunner.java
+│       │   └── resources/
+│       │       ├── application.yml
+│       │       └── application-dev.yml
+│       └── test/
+│           ├── java/
+│           │   └── com/studysheetai/
+│           │       ├── chunking/
+│           │       │   └── TextChunkerServiceTest.java
+│           │       ├── controller/
+│           │       │   ├── DocumentControllerTest.java
+│           │       │   ├── HealthEndpointTest.java
+│           │       │   └── SearchControllerTest.java
+│           │       ├── parser/
+│           │       │   └── PdfParserServiceTest.java
+│           │       ├── repository/
+│           │       │   └── DocumentRepositoryTest.java
+│           │       ├── retrieval/
+│           │       │   └── KeywordRetrievalServiceTest.java
+│           │       ├── service/
+│           │       │   └── DocumentProcessingServiceTest.java
+│           │       └── testutil/
+│           │           └── PdfTestFixtures.java
+│           └── resources/
+│               ├── application-test.yml
+│               ├── mockito-extensions/
+│               │   └── org.mockito.plugins.MockMaker
+│               └── test-data/          # Repeatable test PDF fixtures
+└── docs/
+    ├── pdf-parsing-chunking.md
+    └── rag-first-roadmap.md
 ```
+
+## Planned Additions
+
+The README architecture still points toward a full RAG + agent system, but these directories will be added incrementally as the project reaches each phase:
+
+- Maven wrapper for reproducible local builds.
+- More backend classes inside the current packages as retrieval and generation are added.
+- Vector search and hybrid retrieval upgrades inside `retrieval/`.
+- `agent/` for LangChain4j orchestration and tool calling.
+- `renderer/` for compact HTML-to-PDF generation.
+- `frontend/` after the backend RAG flow is useful enough to expose through a UI.
+- `scripts/`, `.github/`, Docker, and deployment infrastructure after the local backend is stable.
 
 ---
 
@@ -545,4 +483,3 @@ Answer + Citations
 | **Phase 3** | HTML → Compact PDF rendering, support double-column & small fonts | Flying Saucer, CSS |
 | **Phase 4** | Multi-turn dialogue + Project persistence (Session management) | Spring Data JPA, ChatMemory |
 | **Phase 5** | AWS deployment (Lambda + API Gateway + S3 + Aurora Serverless) | AWS SDK, Serverless |
-
